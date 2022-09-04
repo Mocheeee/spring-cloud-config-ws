@@ -1,0 +1,48 @@
+server:
+  port: 8888
+
+management:
+  server:
+    port: 8889
+  endpoints:
+    web:
+      base-path: /manage
+      exposure:
+        include: "*"
+  endpoint:
+    info:
+      enabled: true
+    env:
+      enabled: true
+    health:
+      enabled: true
+    restart:
+      enabled: true
+
+health:
+  config:
+    enabled: false # enable/disable healthcheck on spring config server
+
+spring:
+  application:
+    name: spring-cloud-config-ws
+  profiles:
+    active: git
+  security:
+    enabled: ${CLOUD_CONFIG_SECURITY:false} # enable or disable authentication on spring config server
+    user:
+      name: ${CLOUD_CONFIG_USERNAME}
+      password: ${CLOUD_CONFIG_PASSWORD}
+  cloud:
+    config:
+      server:
+        git:
+          order: 1
+          uri: https://github.com/${CLOUD_CONFIG_GITHUB_ORG:nhoxnho1212}/{application}${CLOUD_CONFIG_REPO_SUFFIX:-config}
+          force-pull: true
+          timeout: 45000
+#          basedir: /var/nhoxnho1212/spring-cloud-config-ws/repos
+          search-paths: '*'
+          strictHostKeyChecking: false
+          username: ${GITHUB_USERNAME}
+          password: ${GITHUB_TOKEN}
